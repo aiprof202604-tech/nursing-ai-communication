@@ -10,7 +10,7 @@ authors:
 version: "1.0.0"
 date-released: "2026-05-28"
 license: MIT
-repository-code: "https://github.com/<USERNAME>/<REPO>"
+repository-code: "https://github.com/aiprof202604-tech/nursing-ai-communication"
 keywords:
   - generative-AI
   - nursing-education
