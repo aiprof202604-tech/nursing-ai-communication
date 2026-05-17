@@ -1,0 +1,12 @@
+# Experiment dependencies
+anthropic>=0.40.0
+openai>=1.50.0
+google-genai>=0.3.0
+aiosqlite>=0.20.0
+
+# Analysis dependencies
+pandas>=2.0.0
+scipy>=1.11.0
+scikit-posthocs>=0.9.0
+matplotlib>=3.7.0
+seaborn>=0.13.0

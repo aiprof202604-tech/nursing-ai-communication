@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software or data, please cite both the article and this repository."
+type: software
+title: "Multi-LLM In-Silico Evaluation of Generative AI for Student–Nurse Communication"
+authors:
+  - family-names: "Tajima"
+    given-names: "Hiroyuki"
+    orcid: "https://orcid.org/0000-0003-3817-4455"
+    affiliation: "Faculty of Nursing, Shumei University"
+version: "1.0.0"
+date-released: "2026-05-28"
+license: MIT
+repository-code: "https://github.com/<USERNAME>/<REPO>"
+keywords:
+  - generative-AI
+  - nursing-education
+  - clinical-communication
+  - large-language-models
+  - in-silico-evaluation
+  - AI-mediated-communication
+preferred-citation:
+  type: article
+  title: "Generative AI for Student–Nurse Communication in Clinical Nursing Education: A Multi-LLM In-Silico Evaluation and Five Walls to Overcome by 2027"
+  authors:
+    - family-names: "Tajima"
+      given-names: "Hiroyuki"
+      orcid: "https://orcid.org/0000-0003-3817-4455"
+  journal: "Journal of Information Processing"
+  year: 2026
+  notes: "Under review at IPSJ Transactions on Digital Practices (TDP) Special Issue 2027"
