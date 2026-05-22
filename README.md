@@ -5,7 +5,9 @@
 
 Reproducibility package for the paper:
 
-> Tajima, H. (2026). *Generative AI for Student–Nurse Communication in Clinical Nursing Education: A Multi-LLM In-Silico Evaluation and Five Walls to Overcome by 2027.* Under review, IPSJ Transactions on Digital Practices (TDP) Special Issue.
+>Tajima, H. (2026). Generative AI in Student–Nurse Clinical 
+Communication: A Multi-LLM In-Silico Evaluation and Five Walls 
+to 2027.* Under review, IPSJ Transactions on Digital Practices (TDP) Special Issue.
 
 This repository contains the complete experimental code, all prompts, and the full session-level dataset (180 sessions) required to reproduce every quantitative result reported in the paper.
 
