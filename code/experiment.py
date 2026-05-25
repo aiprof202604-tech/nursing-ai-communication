@@ -54,7 +54,7 @@ ACTOR_MODELS = ["claude", "gpt4mini", "gemini"]
 MAX_TURNS    = 6          # exchange pairs (student + nurse = 1 turn)
 
 MODEL_IDS = {
-    "claude"   : "claude-sonnet-4-20250514",
+    "claude"   : "claude-sonnet-4-6",
     "gpt4mini" : "gpt-4.1-mini",
     "gemini"   : "gemini-2.5-flash",
     "judge"    : "gpt-4.1",
@@ -480,13 +480,18 @@ async def run_one_session(
     s_sys = STUDENT_BASE.format(scenario=sc["student"])
     n_sys = NURSE_BASE.format(scenario=sc["nurse"])
 
-    canonical  : List[Dict] = []   # student / nurse turns only (for agent context)
-    transcript : List[Dict] = []   # full record including mediator (for Judge)
+    # Two perception histories (Bug 1 fix).
+    # In Conditions A, B, D: identical contents (no bridging).
+    # In Condition C: each agent sees the OTHER party's bridged version,
+    # and remembers her OWN raw utterance.
+    student_canonical : List[Dict] = []   # what the student perceives
+    nurse_canonical   : List[Dict] = []   # what the nurse perceives
+    transcript        : List[Dict] = []   # full record for Judge
 
     try:
         for turn_idx in range(MAX_TURNS):
             # ── Student turn ──────────────────────────────────────────────────
-            s_msgs = build_api_messages(canonical, "student")
+            s_msgs = build_api_messages(student_canonical, "student")
             if not s_msgs:                        # first turn: prompt the student
                 s_msgs = [{"role": "user",
                             "content": "Please begin the interaction based on your scenario."}]
@@ -496,12 +501,12 @@ async def run_one_session(
                 coach = await call_llm(
                     "gpt4mini", MEDIATOR_COACH_STUDENT,
                     [{"role": "user",
-                      "content": f"Conversation so far:\n{_fmt_canonical(canonical)}\n"
+                      "content": f"Conversation so far:\n{_fmt_canonical(student_canonical)}\n"
                                  f"Please coach the student for her next turn."}],
                     60,
                 )
                 s_sys_turn = s_sys + f"\n\n[AI SUPPORT — this turn only]: {coach}"
-                transcript.append({"speaker": "mediator→student", "content": coach})
+                transcript.append({"speaker": "mediator_coach_student", "content": coach})
             else:
                 s_sys_turn = s_sys
                 coach = None
@@ -516,32 +521,36 @@ async def run_one_session(
                       "content": f"Rewrite for the nurse:\n{student_raw}"}],
                     ACTOR_TOKENS,
                 )
-                transcript.append({"speaker": "student_raw",     "content": student_raw})
-                transcript.append({"speaker": "mediator→nurse",  "content": bridged_s2n})
-                student_for_nurse = bridged_s2n
+                # Transcript: clean "student" label with the delivered (bridged) content
+                # for the Judge (Bug 2 fix), plus an internal record of the raw and
+                # bridge action for audit (excluded from the Judge view).
+                transcript.append({"speaker": "student", "content": bridged_s2n})
+                transcript.append({"speaker": "mediator_internal_student_raw",
+                                   "content": student_raw})
+                transcript.append({"speaker": "mediator_internal_bridge_s2n",
+                                   "content": bridged_s2n})
+                # Bug 1 fix: student remembers her OWN raw; nurse sees BRIDGED.
+                student_canonical.append({"speaker": "student", "content": student_raw})
+                nurse_canonical.append({"speaker": "student",   "content": bridged_s2n})
             else:
                 transcript.append({"speaker": "student", "content": student_raw})
-                student_for_nurse = student_raw
-
-            canonical.append({"speaker": "student", "content": student_raw})
+                student_canonical.append({"speaker": "student", "content": student_raw})
+                nurse_canonical.append({"speaker": "student",   "content": student_raw})
 
             # ── Nurse turn ────────────────────────────────────────────────────
-            n_msgs = build_api_messages(canonical, "nurse")
+            n_msgs = build_api_messages(nurse_canonical, "nurse")
 
             if condition == "D":
                 # Mediator coaches nurse
                 coach_n = await call_llm(
                     "gpt4mini", MEDIATOR_COACH_NURSE,
                     [{"role": "user",
-                      "content": f"Conversation so far:\n{_fmt_canonical(canonical)}\n"
+                      "content": f"Conversation so far:\n{_fmt_canonical(nurse_canonical)}\n"
                                  f"Please coach the nurse for her next turn."}],
                     50,
                 )
                 n_sys_turn = n_sys + f"\n\n[AI SUPPORT — this turn only]: {coach_n}"
-                transcript.append({"speaker": "mediator→nurse", "content": coach_n})
-            elif condition == "C":
-                # Nurse sees bridged message (already in canonical as "student" role)
-                n_sys_turn = n_sys
+                transcript.append({"speaker": "mediator_coach_nurse", "content": coach_n})
             else:
                 n_sys_turn = n_sys
 
@@ -555,14 +564,23 @@ async def run_one_session(
                       "content": f"Rewrite for the student:\n{nurse_raw}"}],
                     ACTOR_TOKENS,
                 )
-                transcript.append({"speaker": "nurse_raw",         "content": nurse_raw})
-                transcript.append({"speaker": "mediator→student",  "content": bridged_n2s})
+                transcript.append({"speaker": "nurse", "content": bridged_n2s})
+                transcript.append({"speaker": "mediator_internal_nurse_raw",
+                                   "content": nurse_raw})
+                transcript.append({"speaker": "mediator_internal_bridge_n2s",
+                                   "content": bridged_n2s})
+                # Bug 1 fix: nurse remembers her OWN raw; student sees BRIDGED.
+                nurse_canonical.append({"speaker": "nurse",   "content": nurse_raw})
+                student_canonical.append({"speaker": "nurse", "content": bridged_n2s})
             else:
                 transcript.append({"speaker": "nurse", "content": nurse_raw})
+                nurse_canonical.append({"speaker": "nurse",   "content": nurse_raw})
+                student_canonical.append({"speaker": "nurse", "content": nurse_raw})
 
-            canonical.append({"speaker": "nurse", "content": nurse_raw})
-
-        await save_session(db, sid, scenario, condition, run, model, transcript, canonical)
+        # We persist the student perception history as the "canonical" record;
+        # it equals nurse_canonical in Conditions A, B, D and differs only in C.
+        await save_session(db, sid, scenario, condition, run, model,
+                           transcript, student_canonical)
         log.info("DONE  %s", sid)
 
     except Exception as e:
@@ -585,8 +603,17 @@ async def run_one_eval(session: Dict, db: aiosqlite.Connection) -> None:
 
     log.info("JUDGE %s", sid)
     transcript = json.loads(session["transcript"])
+
+    # Bug 2 fix: filter out mediator-internal and coach entries before sending
+    # to the Judge. The Judge sees only the dialogue as it was actually
+    # delivered: "student" and "nurse" turns. In Condition C these are the
+    # bridged versions (what each recipient experienced); in A, B, D these
+    # are the raw turns (no bridging). The mediator-coach messages in B and D
+    # influenced the agent outputs but are not directly visible to the
+    # recipient or the Judge, mirroring real deployment.
+    visible = [e for e in transcript if e["speaker"] in ("student", "nurse")]
     fmt = "\n".join(
-        f"[{e['speaker'].upper()}] {e['content']}" for e in transcript
+        f"[{e['speaker'].upper()}] {e['content']}" for e in visible
     )
 
     try:

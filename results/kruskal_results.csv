@@ -1,0 +1,13 @@
+dimension,factor,H_stat,p_value,sig
+PS,condition,30.5013,1e-06,***
+CC,condition,14.3169,0.002504,**
+ER,condition,18.868,0.000291,***
+LF,condition,18.0126,0.000437,***
+RC,condition,25.0813,1.5e-05,***
+total,condition,20.996,0.000105,***
+PS,actor_model,63.8818,0.0,***
+CC,actor_model,75.0592,0.0,***
+ER,actor_model,79.8379,0.0,***
+LF,actor_model,84.1119,0.0,***
+RC,actor_model,61.7438,0.0,***
+total,actor_model,87.1277,0.0,***

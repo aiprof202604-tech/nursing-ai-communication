@@ -7,10 +7,14 @@ authors:
     given-names: "Hiroyuki"
     orcid: "https://orcid.org/0000-0003-3817-4455"
     affiliation: "Faculty of Nursing, Shumei University"
-version: "1.0.0"
-date-released: "2026-05-28"
+version: "2.0.0"
+date-released: "2026-05-25"
 license: MIT
 repository-code: "https://github.com/aiprof202604-tech/nursing-ai-communication"
+# DOI for this specific version is assigned by Zenodo upon release.
+# Update the line below once the v2.0.0 DOI is published; meanwhile, the
+# Concept DOI (10.5281/zenodo.20254705) resolves to the latest version.
+doi: "10.5281/zenodo.20254705"
 keywords:
   - generative-AI
   - nursing-education
@@ -20,11 +24,12 @@ keywords:
   - AI-mediated-communication
 preferred-citation:
   type: article
-  title: "Generative AI for Student–Nurse Communication in Clinical Nursing Education: A Multi-LLM In-Silico Evaluation and Five Walls to Overcome by 2027"
+  title: "Generative AI in Student–Nurse Clinical Communication: A Multi-LLM In-Silico Evaluation and Five Walls to 2027"
   authors:
     - family-names: "Tajima"
       given-names: "Hiroyuki"
       orcid: "https://orcid.org/0000-0003-3817-4455"
-  journal: "Journal of Information Processing"
+      affiliation: "Faculty of Nursing, Shumei University"
+  journal: "IPSJ Transactions on Digital Practices"
   year: 2026
-  notes: "Under review at IPSJ Transactions on Digital Practices (TDP) Special Issue 2027"
+  notes: "Under review; Special Issue: Generative AI in the Real World and the Walls to Overcome by 2027"

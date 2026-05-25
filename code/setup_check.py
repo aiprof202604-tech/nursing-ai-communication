@@ -56,7 +56,7 @@ def check_env_vars():
             fail(f"{var} is not set")
             all_ok = False
         elif not val.startswith(prefix):
-            fail(f"{var} set but does not start with '{prefix}' — check key")
+            fail(f"{var} set but does not start with '{prefix}'  Echeck key")
             all_ok = False
         else:
             masked = f"{val[:8]}...{val[-4:]}"
@@ -70,7 +70,7 @@ async def check_claude():
         import anthropic
         client = anthropic.AsyncAnthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
         resp = await client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             max_tokens=20,
             messages=[{"role": "user", "content": "Reply with exactly: OK"}],
         )
