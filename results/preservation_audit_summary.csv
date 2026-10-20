@@ -1,0 +1,10 @@
+subset,numerals_in_source,numerals_preserved,numeral_preservation,numerals_new_in_rewrite,concepts_in_source,concepts_preserved,concept_preservation
+ALL,271,267,0.985,19,985,954,0.969
+actor=claude,193,189,0.979,19,626,602,0.962
+actor=gemini,50,50,1.000,0,172,168,0.977
+actor=gpt4mini,28,28,1.000,0,187,184,0.984
+direction=N2S,86,83,0.965,5,509,490,0.963
+direction=S2N,185,184,0.995,14,476,464,0.975
+scenario=S1,73,73,1.000,2,351,345,0.983
+scenario=S2,45,44,0.978,5,144,142,0.986
+scenario=S3,153,150,0.980,12,490,467,0.953

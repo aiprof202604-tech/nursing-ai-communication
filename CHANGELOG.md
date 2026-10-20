@@ -1,5 +1,68 @@
 # Changelog
 
+## [2.1.0] — 2026-10-20
+
+Materials release accompanying the accepted article (IPSJ Transactions on
+Digital Practices Vol.8 No.1; version of record in Journal of Information
+Processing Vol.35). No experiment was re-run; every v2.0.0 result is unchanged.
+
+### Added
+
+- `data/experiment.db` — the SQLite session database of the published run
+  (2026-05-18): all 180 dialogues, including the Mediator's raw and rewritten
+  turns (Condition C) and the private coaching turns (Conditions B, D), plus
+  the Judge's scores and rationales. Its export reproduces `data/data.csv`
+  byte for byte (`code/verify_db_export.py`).
+- `data/transcripts.jsonl` — the same 180 sessions as JSON Lines
+  (`code/export_transcripts.py`).
+- `code/preservation_audit.py` — deterministic, rule-based audit of the 540
+  rewritten utterance pairs (Section 4.6). Numerals: 267 of 271 preserved
+  (98.5%), 19 appearing only in a rewrite (all spelled-out numbers rendered as
+  digits or values promoted from stage directions; none fabricated), S1 100%,
+  student-to-nurse 99.5%. Clinical concepts (canonical lexicon in the script):
+  954 of 985 preserved (96.9%). The script asserts all of these values.
+- `results/preservation_audit_summary.csv`, `results/preservation_audit_flagged.csv`
+  — totals by direction / scenario / actor, and every lost or newly appearing
+  item with its source and rewritten text.
+- `code/factorial_art_srh.py` — Aligned Rank Transform (Wobbrock et al., 2011)
+  and Scheirer–Ray–Hare analysis of the scenario × condition × actor-model
+  design (Section 4.3). Aligned responses are rounded to 1e-9 before ranking
+  so that floating-point noise cannot break exact ties.
+- `code/supplementary_stats.py` — Cronbach's alpha and McDonald's omega of the
+  five Judge dimensions (Section 3.5) and the Benjamini–Hochberg FDR
+  sensitivity analysis across the 54 pairwise Dunn comparisons (Section 3.6).
+- `results/S1_internal_consistency.csv`, `results/S2_FDR_sensitivity_54_comparisons.csv`,
+  `results/S3_factorial_ART_SRH.csv`.
+- `code/verify_db_export.py`, `code/export_transcripts.py`.
+- `docs/deployment_checklist.md` (English) and `docs/deployment_checklist_ja.md`
+  (Japanese original) — the full 42-item Five Walls Deployment Checklist
+  (26 Critical, 16 Recommended; Table 3 of the article).
+
+### Fixed
+
+- `README.md`: sampling temperatures corrected to those used in the run and
+  reported in the article (actor and Mediator 0.8, Judge 0.2; previously
+  stated as 0.7 and 0.0). Citation updated to the accepted article.
+- `CITATION.cff`: DOI now points to the Zenodo concept DOI
+  (10.5281/zenodo.20254704), which always resolves to the latest version;
+  10.5281/zenodo.20254705 is the v1.0.0 version DOI and was previously
+  mislabelled as the concept DOI.
+- Deployment Checklist v1.1: effect-size symbol aligned with the article
+  (η² → ε², rank epsilon-squared); licence aligned with the repository (MIT).
+
+### Results summary (from the new scripts)
+
+| Analysis | Result |
+|---|---|
+| Cronbach's alpha (5 dimensions, n = 180) | 0.957 (bootstrap 95% CI 0.947–0.964) |
+| McDonald's omega-total | 0.957 (0.949–0.965) |
+| BH-FDR vs within-dimension Bonferroni (54 comparisons) | Agree on 51/54; the 3 discordant comparisons become significant under FDR — no reported significant result is lost |
+| ART, actor model / condition / scenario | F(2,144) = 170.44 / F(3,144) = 27.89 / F(2,144) = 1.27 (p = .285) |
+| ART, condition × actor | F(6,144) = 5.26, partial eta^2 = 0.18 |
+| SRH (scenario / condition / actor) | H = 0.56 / 21.00 / 87.13 |
+| Preservation audit | numerals 267/271 (98.5%); concepts 954/985 (96.9%) |
+
+
 All notable changes to this reproducibility package are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).

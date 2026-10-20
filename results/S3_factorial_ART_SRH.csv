@@ -1,0 +1,15 @@
+method,outcome,effect,df1,df2,stat,p,partial_eta2
+ART,total,scenario,2,144.0,1.27,0.2849,0.02
+ART,total,condition,3,144.0,27.89,2.8e-14,0.37
+ART,total,actor_model,2,144.0,170.44,1.089e-38,0.7
+ART,total,scenario x condition,6,144.0,2.94,0.009685,0.11
+ART,total,scenario x actor_model,4,144.0,9.11,1.374e-06,0.2
+ART,total,condition x actor_model,6,144.0,5.26,6.336e-05,0.18
+ART,total,scenario x condition x actor_model,12,144.0,1.59,0.09918,0.12
+SRH,total,scenario,2,,0.56,0.7572,
+SRH,total,condition,3,,21.0,0.0001055,
+SRH,total,actor_model,2,,87.13,1.204e-19,
+SRH,total,scenario x condition,6,,5.05,0.5372,
+SRH,total,scenario x actor_model,4,,8.68,0.06951,
+SRH,total,condition x actor_model,6,,6.51,0.369,
+SRH,total,scenario x condition x actor_model,12,,4.36,0.976,

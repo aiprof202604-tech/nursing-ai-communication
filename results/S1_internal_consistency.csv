@@ -1,0 +1,3 @@
+statistic,estimate,boot95_low,boot95_high,n_sessions
+cronbach_alpha,0.957,0.947,0.964,180
+mcdonald_omega_total,0.957,0.949,0.965,180
